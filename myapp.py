@@ -91,10 +91,10 @@ def scrape_tweets():
     
     try:
         # Scrape tweets using Nitter
-        tweets = scraper.get_tweets(username, mode='user', number=1)['tweets'][0]
+        tweets = scraper.get_tweets(username, mode='user', number=5)
         
         # Format tweets for display
-        formatted_tweets = [f"{tweets['date']} - {tweets['text']}"]
+        formatted_tweets = [f"{tweet['content']} - {tweet['date']}" for tweet in tweets]
 
         return render_template('myapp.html', tweets=formatted_tweets, username=username)
 
