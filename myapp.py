@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 from openai import OpenAI
+from ntscraper import Nitter
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -8,6 +10,9 @@ client = OpenAI(
     base_url="https://api-inference.huggingface.co/v1/",
     api_key="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"
 )
+
+# Initialize Nitter scraper
+scraper = Nitter(log_level=1, skip_instance_check=False)
 
 @app.route('/')
 def home():
@@ -77,6 +82,24 @@ def describe_image():
 
     except Exception as e:
         return render_template('myapp.html', image_description=f"Error: {str(e)}", image_url=image_url)
+
+# New route to scrape tweets using Nitter
+@app.route('/scrape_tweets', methods=['POST'])
+def scrape_tweets():
+    # Get Twitter username input
+    username = request.form['username']
+    
+    try:
+        # Scrape tweets using Nitter
+        tweets = scraper.get_tweets(username, mode='user', number=1)['tweets'][0]
+        
+        # Format tweets for display
+        formatted_tweets = [f"{tweets['date']} - {tweets['text']}"]
+
+        return render_template('myapp.html', tweets=formatted_tweets, username=username)
+
+    except Exception as e:
+        return render_template('myapp.html', tweets=[f"Error: {str(e)}"], username=username)
 
 if __name__ == "__main__":
     app.run(debug=True)
