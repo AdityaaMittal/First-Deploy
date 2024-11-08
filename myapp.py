@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request
 from openai import OpenAI
 
 app = Flask(__name__)
@@ -15,35 +15,68 @@ def home():
 
 @app.route('/translate', methods=['POST'])
 def translate():
-    # Get the input text from the form
+    # Get text input for translation
     user_input = request.form['user_input']
 
-    # Prepare the messages
     messages = [
         {
             "role": "user",
-            "content": f"{user_input}"
+            "content": f"Translate: {user_input} to English"
         }
     ]
-    
+
     try:
-        # Call the model
+        # Translate text
         stream = client.chat.completions.create(
-            model="meta-llama/Llama-3.2-3B-Instruct", 
-            messages=messages, 
+            model="meta-llama/Llama-3.2-3B-Instruct",
+            messages=messages,
             max_tokens=500,
             stream=True
         )
-        
-        # Get the response
+
+        # Gather the translation response
         translated_text = ""
         for chunk in stream:
             translated_text += chunk.choices[0].delta.content
-        
+
         return render_template('myapp.html', translated_text=translated_text, user_input=user_input)
 
     except Exception as e:
         return render_template('myapp.html', translated_text=f"Error: {str(e)}", user_input=user_input)
+
+@app.route('/describe_image', methods=['POST'])
+def describe_image():
+    # Get image URL from the form
+    image_url = request.form['image_url']
+
+    messages = [
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": "Describe this image in 1 sentence."},
+                {"type": "image_url", "image_url": {"url": image_url}}
+            ]
+        }
+    ]
+
+    try:
+        # Generate image description
+        stream = client.chat.completions.create(
+            model="meta-llama/Llama-3.2-11B-Vision-Instruct",
+            messages=messages,
+            max_tokens=500,
+            stream=True
+        )
+
+        # Gather the description response
+        image_description = ""
+        for chunk in stream:
+            image_description += chunk.choices[0].delta.content
+
+        return render_template('myapp.html', image_description=image_description, image_url=image_url)
+
+    except Exception as e:
+        return render_template('myapp.html', image_description=f"Error: {str(e)}", image_url=image_url)
 
 if __name__ == "__main__":
     app.run(debug=True)
