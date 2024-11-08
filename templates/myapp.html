@@ -3,33 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Button Click Example</title>
-    <style>
-        #message {
-            color: green;
-            font-weight: bold;
-        }
-    </style>
+    <title>Flask Translation App</title>
 </head>
 <body>
-    <h1>Welcome to My Flask App</h1>
+    <h1>Translate Text Using OpenAI</h1>
     
-    <!-- Button -->
-    <button onclick="handleButtonClick()">Click Me</button>
-    
-    <!-- Message will be displayed here -->
-    <p id="message"></p>
-    
-    <script>
-        function handleButtonClick() {
-            fetch('/button_action')
-                .then(response => response.json())
-                .then(data => {
-                    // Display the message in the paragraph with id "message"
-                    document.getElementById('message').textContent = data.message;
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
+    <form action="/translate" method="POST">
+        <label for="user_input">Enter your Query:</label><br>
+        <input type="text" id="user_input" name="user_input" value="{{ user_input if user_input else '' }}" required><br><br>
+        <button type="submit">Translate</button>
+    </form>
+
+    {% if translated_text %}
+        <h2>Translation Result:</h2>
+        <p><strong>Input:</strong> {{ user_input }}</p>
+        <p><strong>Solution:</strong> {{ translated_text }}</p>
+    {% endif %}
 </body>
 </html>
