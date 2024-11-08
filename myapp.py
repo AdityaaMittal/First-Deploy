@@ -21,7 +21,7 @@ def translate():
     messages = [
         {
             "role": "user",
-            "content": f"Translate: {user_input} to English"
+            "content": f"{user_input}"
         }
     ]
 
