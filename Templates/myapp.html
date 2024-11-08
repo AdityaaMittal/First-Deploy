@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Button Click Example</title>
+    <style>
+        #message {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to My Flask App</h1>
+    
+    <!-- Button -->
+    <button onclick="handleButtonClick()">Click Me</button>
+    
+    <!-- Message will be displayed here -->
+    <p id="message"></p>
+    
+    <script>
+        function handleButtonClick() {
+            fetch('/button_action')
+                .then(response => response.json())
+                .then(data => {
+                    // Display the message in the paragraph with id "message"
+                    document.getElementById('message').textContent = data.message;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
