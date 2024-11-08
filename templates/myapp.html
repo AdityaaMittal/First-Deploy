@@ -3,21 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flask Translation App</title>
+    <title>Flask Translation & Image Description App</title>
 </head>
 <body>
-    <h1>Translate Text Using OpenAI</h1>
-    
+    <h1>OpenAI Flask App</h1>
+
+    <!-- Translation Form -->
+    <h2>Text Translation</h2>
     <form action="/translate" method="POST">
         <label for="user_input">Enter your Query:</label><br>
         <input type="text" id="user_input" name="user_input" value="{{ user_input if user_input else '' }}" required><br><br>
-        <button type="submit">Translate</button>
+        <button type="submit">Give Answer</button>
     </form>
 
     {% if translated_text %}
-        <h2>Translation Result:</h2>
+        <h3>Result:</h3>
         <p><strong>Input:</strong> {{ user_input }}</p>
-        <p><strong>Solution:</strong> {{ translated_text }}</p>
+        <p><strong>Answer:</strong> {{ translated_text }}</p>
+    {% endif %}
+
+    <!-- Image Description Form -->
+    <h2>Image Description</h2>
+    <form action="/describe_image" method="POST">
+        <label for="image_url">Enter Image URL:</label><br>
+        <input type="text" id="image_url" name="image_url" placeholder="Enter image URL here" value="{{ image_url if image_url else '' }}" required><br><br>
+        <button type="submit">Describe Image</button>
+    </form>
+
+    {% if image_description %}
+        <h3>Image Description Result:</h3>
+        <p><strong>Image URL:</strong> <a href="{{ image_url }}" target="_blank">{{ image_url }}</a></p>
+        <p><strong>Description:</strong> {{ image_description }}</p>
     {% endif %}
 </body>
 </html>
